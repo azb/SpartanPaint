@@ -25,7 +25,6 @@ import javafx.scene.shape.Line;
 // Animation of Earth rotating around the sun. (Hello, world!)
 public class JavaFXGameExample extends Application 
 {
-    private int Jake = 1001;
     private int x = 100;
     private int y = 100;
     
@@ -50,7 +49,7 @@ public class JavaFXGameExample extends Application
     @Override
     public void start(Stage theStage) 
     {
-        theStage.setTitle( "Timeline Example" );
+        theStage.setTitle( "Spartan Paint v.0.1.01" );
         
         Group root = new Group();
         Scene theScene = new Scene( root );
