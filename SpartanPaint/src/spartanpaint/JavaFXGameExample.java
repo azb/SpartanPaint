@@ -25,7 +25,7 @@ import javafx.scene.shape.Line;
 // Animation of Earth rotating around the sun. (Hello, world!)
 public class JavaFXGameExample extends Application 
 {
-    private int Jake = 1000;
+    private int Jake = 1001;
     private int x = 100;
     private int y = 100;
     

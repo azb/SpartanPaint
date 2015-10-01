@@ -23,7 +23,7 @@ import javafx.scene.shape.Line;
 //    using the Timeline, KeyFrame, and Duration classes.
 
 // Animation of Earth rotating around the sun. (Hello, world!)
-public class JavaFXGameExample extends Application 
+public class JavaFXGameExample extends Application
 {
     private int x = 100;
     private int y = 100;
@@ -38,7 +38,7 @@ public class JavaFXGameExample extends Application
     int MAX_POINTS = 1000000;
     private int point_x[] = new int[MAX_POINTS];
     private int point_y[] = new int[MAX_POINTS];
-    
+    private Color drawColor;
     
     public static void main(String[] args) 
         {
@@ -48,6 +48,8 @@ public class JavaFXGameExample extends Application
     @Override
     public void start(Stage theStage) 
     {
+        drawColor = Color.BLUE;
+        
         theStage.setTitle( "Timeline Example" );
         
         Group root = new Group();
@@ -60,9 +62,11 @@ public class JavaFXGameExample extends Application
         
         Canvas canvas = new Canvas( 512, 512 );
         root.getChildren().add( canvas );
-        Button btn1 = new Button();
-        btn1.setText("Clear Canvas");
-        btn1.setOnAction(new EventHandler<ActionEvent>() {
+        
+        //Clear Canvas Button
+        Button button_clear_canvas = new Button();
+        button_clear_canvas.setText("Clear Canvas");
+        button_clear_canvas.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent event) {
@@ -70,7 +74,19 @@ public class JavaFXGameExample extends Application
                 //System.out.println("Hello World!");
             }
         });
-        root.getChildren().add(btn1);
+        root.getChildren().add(button_clear_canvas);
+        
+        //Set color to red button
+        Button button_red = new Button();
+        button_red.setText("Red");
+        button_red.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                drawColor = Color.RED;
+            }
+        });
+        root.getChildren().add(button_clear_canvas);
         
         GraphicsContext gc = canvas.getGraphicsContext2D();
         /*
