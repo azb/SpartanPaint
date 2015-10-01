@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -63,6 +64,11 @@ public class JavaFXGameExample extends Application
         root.getChildren().add( canvas );
         
         
+        HBox hbox = new HBox(8); // spacing = 8
+        //hbox.getChildren().addAll(new Label("Name:"), new TextBox());
+        root.getChildren().add( hbox );
+        
+        
         //Clear Canvas Button
         Button button_clear_canvas = new Button();
         button_clear_canvas.setText("Clear Canvas");
@@ -74,7 +80,7 @@ public class JavaFXGameExample extends Application
                 //System.out.println("Hello World!");
             }
         });
-        root.getChildren().add(button_clear_canvas);
+        hbox.getChildren().add(button_clear_canvas);
         
         //Set color to red button
         Button button_red = new Button();
@@ -86,7 +92,7 @@ public class JavaFXGameExample extends Application
                 drawColor = Color.RED;
             }
         });
-        root.getChildren().add(button_red);
+        hbox.getChildren().add(button_red);
         
         
         //Set color to yellow button
@@ -99,7 +105,7 @@ public class JavaFXGameExample extends Application
                 drawColor = Color.YELLOW;
             }
         });
-        root.getChildren().add(button_yellow);
+        hbox.getChildren().add(button_yellow);
         
         
         //Set color to blue button
@@ -112,7 +118,7 @@ public class JavaFXGameExample extends Application
                 drawColor = Color.BLUE;
             }
         });
-        root.getChildren().add(button_blue);
+        hbox.getChildren().add(button_blue);
         
         
         GraphicsContext gc = canvas.getGraphicsContext2D();
