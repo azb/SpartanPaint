@@ -39,6 +39,7 @@ public class JavaFXGameExample extends Application
     int MAX_POINTS = 1000000;
     private int point_x[] = new int[MAX_POINTS];
     private int point_y[] = new int[MAX_POINTS];
+    private Color drawColor;
     
     
     public static void main(String[] args) 
@@ -61,9 +62,12 @@ public class JavaFXGameExample extends Application
         
         Canvas canvas = new Canvas( 512, 512 );
         root.getChildren().add( canvas );
-        Button btn1 = new Button();
-        btn1.setText("Clear Canvas");
-        btn1.setOnAction(new EventHandler<ActionEvent>() {
+        
+        /*
+        //Clear Canvas Button
+        Button button_clear_canvas = new Button();
+        button_clear_canvas.setText("Clear Canvas");
+        button_clear_canvas.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent event) {
@@ -71,7 +75,20 @@ public class JavaFXGameExample extends Application
                 //System.out.println("Hello World!");
             }
         });
-        root.getChildren().add(btn1);
+        root.getChildren().add(button_clear_canvas);
+        
+        //Set color to red button
+        Button button_red = new Button();
+        button_red.setText("Red");
+        button_red.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                drawColor = Color.RED;
+            }
+        });
+        root.getChildren().add(button_clear_canvas);
+        */
         
         GraphicsContext gc = canvas.getGraphicsContext2D();
         /*
@@ -93,12 +110,11 @@ public class JavaFXGameExample extends Application
                     point_x[points] = mouse_x;
                     point_y[points] = mouse_y;
                     points++; 
-                    
                 };
             if(t.getButton() == MouseButton.SECONDARY) {};
             }
         });
-
+        
         KeyFrame kf = new KeyFrame(
             Duration.seconds(0.017),                // 60 FPS
             new EventHandler<ActionEvent>()
@@ -116,14 +132,13 @@ public class JavaFXGameExample extends Application
 
                     mouse_x = MouseInfo.getPointerInfo().getLocation().x - ((int) window_x) - ((int) scene_x);
                     mouse_y = MouseInfo.getPointerInfo().getLocation().y - ((int) window_y) - ((int) scene_y);
-                    
+                
                     // Clear the canvas
                     gc.clearRect(0, 0, 512,512);
                     //gc.fillRect(0,0,x + 50,y + 50);
                     gc.setFill(Color.BLUE);
                     x++;
                     gc.fillRect(mouse_x-5,mouse_y-5, 10, 10);
-                    
                     
                     /*
                     if (MouseEvent.isPrimaryButtonDown())
