@@ -39,8 +39,8 @@ public class JavaFXGameExample extends Application
     int MAX_POINTS = 1000000;
     private int point_x[] = new int[MAX_POINTS];
     private int point_y[] = new int[MAX_POINTS];
+    private Color point_color[] = new Color[MAX_POINTS];
     private Color drawColor;
-    
     
     public static void main(String[] args) 
         {
@@ -76,7 +76,7 @@ public class JavaFXGameExample extends Application
             }
         });
         root.getChildren().add(button_clear_canvas);
-        /*
+        
         //Set color to red button
         Button button_red = new Button();
         button_red.setText("Red");
@@ -87,8 +87,34 @@ public class JavaFXGameExample extends Application
                 drawColor = Color.RED;
             }
         });
-        root.getChildren().add(button_clear_canvas);
-        */
+        root.getChildren().add(button_red);
+        
+        
+        //Set color to yellow button
+        Button button_yellow = new Button();
+        button_yellow.setText("Yellow");
+        button_yellow.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                drawColor = Color.YELLOW;
+            }
+        });
+        root.getChildren().add(button_yellow);
+        
+        
+        //Set color to blue button
+        Button button_blue = new Button();
+        button_blue.setText("Blue");
+        button_blue.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                drawColor = Color.BLUE;
+            }
+        });
+        root.getChildren().add(button_blue);
+        
         
         GraphicsContext gc = canvas.getGraphicsContext2D();
         /*
@@ -109,6 +135,7 @@ public class JavaFXGameExample extends Application
                 {
                     point_x[points] = mouse_x;
                     point_y[points] = mouse_y;
+                    point_color[points] = drawColor;
                     points++; 
                 };
             if(t.getButton() == MouseButton.SECONDARY) {};
@@ -152,6 +179,7 @@ public class JavaFXGameExample extends Application
                     
                     for(int i = 0 ; i < points ; i++)
                     {
+                    gc.setFill(point_color[i]);
                     gc.fillRect(point_x[i]-5,point_y[i]-5, 10, 10);
                     
                     //Line theLine = new Line(point_x[i-1], point_y[i-1], point_x[i], point_y[i]);
