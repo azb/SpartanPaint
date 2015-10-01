@@ -63,7 +63,7 @@ public class JavaFXGameExample extends Application
         Canvas canvas = new Canvas( 512, 512 );
         root.getChildren().add( canvas );
         
-        /*
+        
         //Clear Canvas Button
         Button button_clear_canvas = new Button();
         button_clear_canvas.setText("Clear Canvas");
@@ -76,7 +76,7 @@ public class JavaFXGameExample extends Application
             }
         });
         root.getChildren().add(button_clear_canvas);
-        
+        /*
         //Set color to red button
         Button button_red = new Button();
         button_red.setText("Red");
