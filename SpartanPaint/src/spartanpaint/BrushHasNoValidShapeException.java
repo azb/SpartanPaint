@@ -13,7 +13,7 @@ public class BrushHasNoValidShapeException extends RuntimeException{
     
     final private static String DEFAULT_MESSAGE = "The active brush does not have a valid shape!";
     
-    public BrushHasNoValidShapeException(BrushShape brush)
+    public BrushHasNoValidShapeException(Brush brush)
     {
         super(DEFAULT_MESSAGE + " BrushShape object info: " + brush.toString());
     }

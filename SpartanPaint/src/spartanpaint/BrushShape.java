@@ -1,8 +1,6 @@
 
 package spartanpaint;
 import java.util.ArrayList;
-import spartanpaint.Coordinate;
-
 /**
  * The BrushShape class is an abstract class which provides guidelines on creating different kinds of brushes.
  * @author Christian
@@ -43,7 +41,7 @@ public abstract class BrushShape {
     {
         return this.size;
     }
-    public String setName(String name)
+    public void setName(String name)
     {
         this.name = name;
     }
@@ -53,11 +51,11 @@ public abstract class BrushShape {
     }
     
     /**
-     * The findPixels method is used to return a list of valid pixels that intersect the BrushShape.
+     * The findPixels method is used to return a list of coordinates of potentially valid Pixels that intersect the BrushShape.
      * It is implemented in children BrushTools.
      * @param x The x coordinate of the mouse
      * @param y The y coordinate of the mouse
      * @return The list of pixels that intersect the BrushShape.
      */
-    abstract public ArrayList<Coordinate> findPixels(int x, int y, Layer layer);
+    abstract public ArrayList<Coordinate>findCoordinates(int x, int y);
 }

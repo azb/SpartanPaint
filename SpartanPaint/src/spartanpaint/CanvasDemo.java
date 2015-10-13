@@ -1,39 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package spartanpaint;
 
 import java.awt.MouseInfo;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
+import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.scene.shape.Line;
 
 /**
- * Spartanpaint: A revolutionary tool from a revolutionary team.
- * @author Christian Facultad
- * @author Jacob Motta
- * @author Arthur Baney
- * @author Vincent Brubaker-Gianakos
+ * We haven't implemented the main class, UI, UICanvas, canvas class yet, so here's a temporary class to demo/debug/test our image-editing functionality.
+ * @author Christian
  */
-public class SpartanPaint extends Application
+public class CanvasDemo extends Application 
 {
-    private int Jake = 1001;
     private int x = 100;
     private int y = 100;
     
@@ -48,50 +41,65 @@ public class SpartanPaint extends Application
     private int point_x[] = new int[MAX_POINTS];
     private int point_y[] = new int[MAX_POINTS];
     
+    private Layer layer;
+    private Brush brush;
+    GraphicsContext gc;
+    
     
     public static void main(String[] args) 
         {
         launch(args);
         }
     
+    static void updateCanvas(GraphicsContext gc, Layer layer)
+    {
+         for(int i = 0; i < layer.length; i++)
+         {
+             for(int j = 0; j < layer.height; i++)
+             {
+                 gc.setFill(layer.getPixel(i, j));
+                 gc.fillRect(i, j, 1, 1);
+             }
+         }
+    }
+    
     @Override
     public void start(Stage theStage) 
     {
+        theStage.setTitle( "CanvasDemo" );
+        
         Group root = new Group();
-        
-        
-        theStage.setTitle( "SpartanPaint™" );
         Scene theScene = new Scene( root );
         theStage.setScene( theScene );
-        
-        UICanvas canvas = new UICanvas();
-        
-        
         window_x = theScene.getWindow().getX();
         window_y = theScene.getWindow().getY();
         scene_x = theScene.getX();
         scene_y = theScene.getY();
         
+        Canvas canvas = new Canvas( 512, 512 );
+        root.getChildren().add( canvas );
+        
+        brush = new Brush(layer, new SquareBrush(), new PaintEffect(), "Brush" );
+        layer = new Layer(512, 512, Color.WHITE, "Layer 1");
         
         Button btn1 = new Button();
         btn1.setText("Clear Canvas");
+        
+        Button btn2 = new Button();
+        btn2.setText("Toggle Brush");
+        
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent event) {
-                points = 0;
-                //System.out.println("Hello World!");
             }
         });
+        
         root.getChildren().add(btn1);
+        root.getChildren().add(btn2);
         
-        
-        /*
-        Image earth = new Image( "earth.png" );
-        Image sun   = new Image( "sun.png" );
-        Image space = new Image( "space.png" );
-        */
-        
+        gc = canvas.getGraphicsContext2D();
+
         Timeline paintLoop = new Timeline();
         paintLoop.setCycleCount( Timeline.INDEFINITE );
         
@@ -102,9 +110,7 @@ public class SpartanPaint extends Application
             public void handle(MouseEvent t) {
             if(t.getButton() == MouseButton.PRIMARY) 
                 {
-                    point_x[points] = mouse_x;
-                    point_y[points] = mouse_y;
-                    points++; 
+                    
                     
                 };
             if(t.getButton() == MouseButton.SECONDARY) {};
@@ -130,40 +136,14 @@ public class SpartanPaint extends Application
                     mouse_y = MouseInfo.getPointerInfo().getLocation().y - ((int) window_y) - ((int) scene_y);
                     
                     // Clear the canvas
-                    gc.clearRect(0, 0, 512,512);
+                    //gc.clearRect(0, 0, 512,512);
                     //gc.fillRect(0,0,x + 50,y + 50);
-                    gc.setFill(Color.BLUE);
-                    x++;
-                    gc.fillRect(mouse_x-5,mouse_y-5, 10, 10);
                     
+                    brush.primaryApply(new Coordinate(mouse_x, mouse_y));
+                    updateCanvas(gc, layer);
                     
-                    /*
-                    if (MouseEvent.isPrimaryButtonDown())
-                    {
-                    
-                    } 
-                    else 
-                    {
-                    
-                    }*/
-                 
-                    for(int i = 0 ; i < points ; i++)
-                    {
-                    gc.fillRect(point_x[i]-5,point_y[i]-5, 10, 10);
-                    
-                    //Line theLine = new Line(point_x[i-1], point_y[i-1], point_x[i], point_y[i]);
-                    
-                    }
-                    
-                    String str1 = Double.toString(window_x);// + " , " + Double.toString(window_y);
-                    
-                    //gc.fillText(str1, 200, 200); //draw screen position text
-                    // background image clears canvas
-                    /*
-                    gc.drawImage( space, 0, 0 );
-                    gc.drawImage( earth, x, y );
-                    gc.drawImage( sun, 196, 196 );
-                    */
+                    String str1 = Double.toString(window_x);
+
                 }
             });
         
@@ -178,4 +158,3 @@ public void button(String text)
 
 }
 }
-
