@@ -34,6 +34,7 @@ public class SquareBrush extends BrushShape {
      * @param layer the layer to find potential pixels in.
      * @return a list of potential coordinates of Pixels intersecting the brush.
      */
+    @Override
     public ArrayList<Coordinate>findCoordinates(int x, int y)
     {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>(size*size);

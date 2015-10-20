@@ -15,14 +15,17 @@ public class Layer {
     public int x2;
     public int y1;
     public int y2;
-    public int length;
-    public int height;
+    
+    private int length;
+    private int height;
             
             
     private ArrayList<ArrayList<Pixel>> x;
+    private boolean enabled = true;
+    private int opacity = 255;
     
     
-    String name;
+    private String name;
 
     /**
      * Create a transparent layer.
@@ -35,6 +38,7 @@ public class Layer {
         this.name = name;
         this.height = xSize;
         this.length = ySize;
+        
         for (int i = 0; i < xSize; i++) {
             x.set(i, new ArrayList<Pixel>());
         }
@@ -113,5 +117,33 @@ public class Layer {
         if (x.get(c.getX()).set(c.getY(), pixel) != null) {
             x.get(c.getX()).set(c.getY(), pixel);
         }
+    }
+
+    /**
+     * @return the enabled
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
+     * @return the length
+     */
+    public int getLength() {
+        return length;
+    }
+
+    /**
+     * @return the height
+     */
+    public int getHeight() {
+        return height;
     }
 }

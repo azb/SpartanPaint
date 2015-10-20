@@ -57,7 +57,7 @@ public class CanvasDemo extends Application
          {
              for(int j = 0; j < layer.height; i++)
              {
-                 gc.setFill(layer.getPixel(i, j));
+                 gc.setFill(layer.getPixel(i, j).getColor());
                  gc.fillRect(i, j, 1, 1);
              }
          }
@@ -77,6 +77,7 @@ public class CanvasDemo extends Application
         scene_y = theScene.getY();
         
         Canvas canvas = new Canvas( 512, 512 );
+        gc = canvas.getGraphicsContext2D();
         root.getChildren().add( canvas );
         
         brush = new Brush(layer, new SquareBrush(), new PaintEffect(), "Brush" );
@@ -84,9 +85,6 @@ public class CanvasDemo extends Application
         
         Button btn1 = new Button();
         btn1.setText("Clear Canvas");
-        
-        Button btn2 = new Button();
-        btn2.setText("Toggle Brush");
         
         btn1.setOnAction(new EventHandler<ActionEvent>() {
             
@@ -96,9 +94,8 @@ public class CanvasDemo extends Application
         });
         
         root.getChildren().add(btn1);
-        root.getChildren().add(btn2);
         
-        gc = canvas.getGraphicsContext2D();
+        
 
         Timeline paintLoop = new Timeline();
         paintLoop.setCycleCount( Timeline.INDEFINITE );

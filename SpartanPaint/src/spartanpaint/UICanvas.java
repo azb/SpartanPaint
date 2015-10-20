@@ -32,7 +32,6 @@ import javafx.scene.shape.Line;
 public class UICanvas {
     final private int DEFAULT_X = 500;
     final private int DEFAULT_Y = 500;
-    
-    public UICanvas
+
     
 }

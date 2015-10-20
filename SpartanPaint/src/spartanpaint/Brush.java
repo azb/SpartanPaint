@@ -166,7 +166,7 @@ public class Brush extends Tool {
     public void setShape(BrushShape shape) {
         this.shape = shape;
     }
-        public Effect getEffect() {
+       public Effect getEffect() {
         return effect;
     }
     /**
@@ -175,6 +175,4 @@ public class Brush extends Tool {
     public void setEffect(Effect effect) {
         this.effect = effect;
     }
-
-
 }
