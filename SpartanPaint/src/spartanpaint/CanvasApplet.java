@@ -7,15 +7,17 @@ public class CanvasApplet extends PApplet
     int ppmouseX;
     int ppmouseY;
     
+    public int SomeColor;
+    
     @Override
     public void setup()
     {
-        frameRate(24);
+        //frameRate(24);
         size(200, 200);
         background(0);
         ppmouseX = mouseX;
         ppmouseY = mouseY;
-        
+        SomeColor = color(255, 0, 0);
     }
     @Override
     public void draw()
@@ -48,7 +50,7 @@ public class CanvasApplet extends PApplet
         
         if (mousePressed)
         {
-            stroke(200,0,0);
+            stroke(SomeColor);
             bezier(x1,y1,x2,y2,x3,y3,x3,y3);
             stroke(0,200,0);
             line(x1,y1,x3,y3);

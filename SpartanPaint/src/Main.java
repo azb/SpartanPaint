@@ -1,11 +1,13 @@
 import java.awt.Dimension;
 
+import spartanpaint.*;
+
 public class Main extends javax.swing.JFrame {
 
     public Main() {
-        System.setProperty("sun.awt.noerasebackground", "true");
+        //System.setProperty("sun.awt.noerasebackground", "true");
         initComponents();
-        CanvasPanel.SetInstance(MainCanvasApplet, true);
+        CanvasPanel.SetInstance(CanvasApplet, true);
     }
 
     /**
@@ -17,7 +19,7 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        MainCanvasApplet = new spartanpaint.CanvasApplet();
+        CanvasApplet = new spartanpaint.CanvasApplet();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -28,17 +30,6 @@ public class Main extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
-        javax.swing.GroupLayout MainCanvasAppletLayout = new javax.swing.GroupLayout(MainCanvasApplet);
-        MainCanvasApplet.setLayout(MainCanvasAppletLayout);
-        MainCanvasAppletLayout.setHorizontalGroup(
-            MainCanvasAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 10, Short.MAX_VALUE)
-        );
-        MainCanvasAppletLayout.setVerticalGroup(
-            MainCanvasAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 10, Short.MAX_VALUE)
-        );
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jToolBar1.setRollover(true);
@@ -48,6 +39,11 @@ public class Main extends javax.swing.JFrame {
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton1);
 
         jButton2.setText("jButton2");
@@ -65,7 +61,6 @@ public class Main extends javax.swing.JFrame {
         getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
         CanvasPanel.setPreferredSize(new java.awt.Dimension(800, 600));
-        CanvasPanel.setLayout(new java.awt.GridBagLayout());
         CanvasScrollPane.setViewportView(CanvasPanel);
 
         getContentPane().add(CanvasScrollPane, java.awt.BorderLayout.CENTER);
@@ -80,6 +75,10 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        CanvasApplet.SomeColor = CanvasApplet.color(0, 0, 255);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -115,9 +114,9 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private spartanpaint.CanvasApplet CanvasApplet;
     private spartanpaint.PAppletPanel CanvasPanel;
     private javax.swing.JScrollPane CanvasScrollPane;
-    private spartanpaint.CanvasApplet MainCanvasApplet;
     private javax.swing.JMenuBar MainMenuBar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
