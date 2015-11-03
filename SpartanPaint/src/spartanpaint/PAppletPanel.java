@@ -5,34 +5,46 @@ import javax.swing.JPanel;
 
 import processing.core.PApplet;
 
-public class PAppletPanel<T extends PApplet> extends JPanel
+public abstract class PAppletPanel<T extends PApplet> extends JPanel
 {
-    private T Instance;
-
+    protected T Instance;
     public T GetInstance()
     {
         return Instance;
     }
+    
+    protected abstract T CreatePApplet();
 
-    public void SetInstance(T instance, boolean auto_resize)
+    public PAppletPanel()
     {
-        Instance = instance;
-        if(Instance != null)
+        this(true);
+    }
+    
+    public PAppletPanel(boolean auto_resize)
+    {
+        // This is really annoying but at least it works.
+        // I don't know of any better way to make the
+        // layout recalculate where things should be.
+        java.awt.EventQueue.invokeLater(() ->
         {
-            Instance.init();
-            if(auto_resize)
+            Instance = CreatePApplet();
+            if(Instance != null)
             {
-                // This is really annoying but at least it works.
-                java.awt.EventQueue.invokeLater(() ->
+                Instance.init();
+                if(auto_resize)
                 {
-                    Dimension prefered_size = getPreferredSize();
-                    Instance.size(prefered_size.width, prefered_size.height);
                     java.awt.EventQueue.invokeLater(() ->
                     {
-                        add(Instance);
+                        Dimension preferred_size = getPreferredSize();
+                        Instance.size(
+                                preferred_size.width,
+                                preferred_size.height);
+                        java.awt.EventQueue.invokeLater(() -> {
+                            add(Instance);
+                        });
                     });
-                });
+                }
             }
-        }
+        });
     }
 }

@@ -7,7 +7,6 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         //System.setProperty("sun.awt.noerasebackground", "true");
         initComponents();
-        CanvasPanel.SetInstance(CanvasApplet, true);
     }
 
     /**
@@ -17,15 +16,15 @@ public class Main extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
-        CanvasApplet = new spartanpaint.CanvasApplet();
         jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         CanvasScrollPane = new javax.swing.JScrollPane();
-        CanvasPanel = new spartanpaint.PAppletPanel();
+        Canvas = new spartanpaint.CanvasPanel();
         MainMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -39,8 +38,10 @@ public class Main extends javax.swing.JFrame {
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        jButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 jButton1ActionPerformed(evt);
             }
         });
@@ -60,8 +61,8 @@ public class Main extends javax.swing.JFrame {
 
         getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
-        CanvasPanel.setPreferredSize(new java.awt.Dimension(800, 600));
-        CanvasScrollPane.setViewportView(CanvasPanel);
+        Canvas.setPreferredSize(new java.awt.Dimension(800, 600));
+        CanvasScrollPane.setViewportView(Canvas);
 
         getContentPane().add(CanvasScrollPane, java.awt.BorderLayout.CENTER);
 
@@ -77,7 +78,8 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        CanvasApplet.SomeColor = CanvasApplet.color(0, 0, 255);
+        CanvasPanel.Applet canvas = Canvas.GetInstance();
+        canvas.SomeColor = canvas.color(0, 0, 255);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -114,8 +116,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private spartanpaint.CanvasApplet CanvasApplet;
-    private spartanpaint.PAppletPanel CanvasPanel;
+    private spartanpaint.CanvasPanel Canvas;
     private javax.swing.JScrollPane CanvasScrollPane;
     private javax.swing.JMenuBar MainMenuBar;
     private javax.swing.JButton jButton1;
