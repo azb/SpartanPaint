@@ -22,8 +22,8 @@ public class CanvasApplet extends PApplet
     @Override
     public void draw()
     {
-        fill(0, 2 * (frameCount % 2));
-        rect(0,0,width,height);
+        fill(0, 2); // * (frameCount % 2)
+        //rect(0,0,width,height);
         stroke(255);
         strokeWeight(2);
         
@@ -50,9 +50,9 @@ public class CanvasApplet extends PApplet
         
         if (mousePressed)
         {
-            stroke(SomeColor);
-            bezier(x1,y1,x2,y2,x3,y3,x3,y3);
-            stroke(0,200,0);
+            //stroke(SomeColor);
+            //bezier(x1,y1,x2,y2,x3,y3,x3,y3);
+            //stroke(0,200,0);
             line(x1,y1,x3,y3);
         }
     }
