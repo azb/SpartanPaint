@@ -1,5 +1,6 @@
 package spartanpaint;
 
+import javafx.scene.paint.Color;
 import processing.core.*;
 
 public class CanvasApplet extends PApplet
@@ -7,7 +8,7 @@ public class CanvasApplet extends PApplet
     int ppmouseX;
     int ppmouseY;
     
-    public int SomeColor;
+    public Color brushColor;
     
     @Override
     public void setup()
@@ -17,7 +18,7 @@ public class CanvasApplet extends PApplet
         background(0);
         ppmouseX = mouseX;
         ppmouseY = mouseY;
-        SomeColor = color(255, 0, 0);
+        brushColor = Color.RED;//color(255, 0, 0);
     }
     @Override
     public void draw()
@@ -50,7 +51,7 @@ public class CanvasApplet extends PApplet
         
         if (mousePressed)
         {
-            //stroke(SomeColor);
+            fill((float) brushColor.getRed(),(float) brushColor.getGreen(),(float) brushColor.getBlue());
             //bezier(x1,y1,x2,y2,x3,y3,x3,y3);
             //stroke(0,200,0);
             line(x1,y1,x3,y3);

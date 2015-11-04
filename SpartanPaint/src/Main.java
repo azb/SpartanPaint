@@ -1,5 +1,11 @@
-import java.awt.Dimension;
+//import com.sun.prism.paint.Color;
 
+import java.awt.Dimension;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.paint.Color;
+//import javax.swing.JColorChooser;
+import javafx.scene.control.ColorPicker;
 import spartanpaint.*;
 
 public class Main extends javax.swing.JFrame {
@@ -21,8 +27,9 @@ public class Main extends javax.swing.JFrame {
 
         CanvasApplet = new spartanpaint.CanvasApplet();
         jToolBar1 = new javax.swing.JToolBar();
+        clearCanvasButton = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        brushColorButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         CanvasScrollPane = new javax.swing.JScrollPane();
         CanvasPanel = new spartanpaint.PAppletPanel();
@@ -35,22 +42,33 @@ public class Main extends javax.swing.JFrame {
         jToolBar1.setRollover(true);
         jToolBar1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
+        clearCanvasButton.setText("Clear Canvas");
+        clearCanvasButton.setFocusable(false);
+        clearCanvasButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        clearCanvasButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        clearCanvasButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearCanvasButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(clearCanvasButton);
+
         jButton3.setText("Brush Size");
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(jButton3);
 
-        jButton1.setText("Brush Color");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        brushColorButton.setText("Brush Color");
+        brushColorButton.setFocusable(false);
+        brushColorButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        brushColorButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        brushColorButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                brushColorButtonActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton1);
+        jToolBar1.add(brushColorButton);
 
         jButton2.setText("Eraser");
         jButton2.setFocusable(false);
@@ -76,9 +94,27 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        CanvasApplet.SomeColor = CanvasApplet.color(0, 0, 255);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    //This button shows a color chooser for the brush
+    private void brushColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brushColorButtonActionPerformed
+        CanvasApplet.brushColor = Color.RED; //CanvasApplet.color(85, 0, 85);
+        
+        //JColorChooser colorChooser = new JColorChooser(CanvasApplet.brushColor);
+        final ColorPicker colorPicker = new ColorPicker();
+        colorPicker.setOnAction(new EventHandler() {
+     public void handle(Event t) {
+         Color c = colorPicker.getValue();
+         System.out.println("New Color's RGB = "+c.getRed()+" "+c.getGreen()+" "+c.getBlue());
+     }
+ });
+    }//GEN-LAST:event_brushColorButtonActionPerformed
+
+    //This button clears the canvas
+    private void clearCanvasButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearCanvasButtonActionPerformed
+        // TODO add your handling code here:
+        CanvasApplet.fill(0, 2);
+        CanvasApplet.stroke(255);
+        CanvasApplet.rect(0,0,CanvasApplet.width,CanvasApplet.height);
+    }//GEN-LAST:event_clearCanvasButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -118,7 +154,8 @@ public class Main extends javax.swing.JFrame {
     private spartanpaint.PAppletPanel CanvasPanel;
     private javax.swing.JScrollPane CanvasScrollPane;
     private javax.swing.JMenuBar MainMenuBar;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton brushColorButton;
+    private javax.swing.JButton clearCanvasButton;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JMenu jMenu1;
