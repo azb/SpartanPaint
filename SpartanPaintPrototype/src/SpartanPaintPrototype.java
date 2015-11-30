@@ -1,5 +1,7 @@
 
 import java.awt.MouseInfo;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -13,7 +15,9 @@ import javafx.animation.KeyFrame;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -22,6 +26,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 
 // An alternative implementation of Example 3,
 //    using the Timeline, KeyFrame, and Duration classes.
@@ -37,6 +43,7 @@ public class SpartanPaintPrototype extends Application {
     private double scene_y = 0;
     private int mouse_x = 0;
     private int mouse_y = 0;
+    
     private int points = 0;
     int MAX_POINTS = 1000000;
     private int point_x[] = new int[MAX_POINTS];
@@ -52,7 +59,7 @@ public class SpartanPaintPrototype extends Application {
     private int undo_points = 0;
     private int undo_position[] = new int[MAX_POINTS];
     private int mouseDown = 0;
-    
+
     private int canvas_width = 1024;
     private int canvas_height = 768;
 
@@ -89,25 +96,24 @@ public class SpartanPaintPrototype extends Application {
         Menu helpMenu = new Menu();
         helpMenu.setText("Help");
         MenuItem loadButton = new MenuItem();
-        
-        MenuItem add = new MenuItem("New Image");        
+
+        MenuItem add = new MenuItem("New Image");
         fileMenu.getItems().addAll(add);
-        add = new MenuItem("Load Image");        
+        add = new MenuItem("Load Image");
         fileMenu.getItems().addAll(add);
-        add = new MenuItem("Save Image");        
+        add = new MenuItem("Save Image");
         fileMenu.getItems().addAll(add);
-        
-        add = new MenuItem("New Image");        
+
+        add = new MenuItem("New Image");
         editMenu.getItems().addAll(add);
-        add = new MenuItem("Load Image");        
+        add = new MenuItem("Load Image");
         editMenu.getItems().addAll(add);
-        add = new MenuItem("Save Image");        
+        add = new MenuItem("Save Image");
         editMenu.getItems().addAll(add);
-        
-        
-        topBar.getMenus().addAll(fileMenu,editMenu,helpMenu);
+
+        topBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
         hbox.getChildren().add(topBar);
-        
+
         //Clear Canvas Button
         Button button_clear_canvas = new Button();
         button_clear_canvas.setText("Clear Canvas");
@@ -131,18 +137,18 @@ public class SpartanPaintPrototype extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                if (undo_points > 0)
-                {
-                button_redo.setDisable(false);
-                points = undo_position[undo_points-1];
-                undo_points--;
-                if (undo_points == 0)
-                    button_undo.setDisable(true);
+                if (undo_points > 0) {
+                    button_redo.setDisable(false);
+                    points = undo_position[undo_points - 1];
+                    undo_points--;
+                    if (undo_points == 0) {
+                        button_undo.setDisable(true);
+                    }
                 }
             }
         });
         hbox.getChildren().add(button_undo);
-        
+
         //Redo Button
         button_redo.setText("Redo");
         button_redo.setDisable(true);
@@ -150,86 +156,42 @@ public class SpartanPaintPrototype extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                if (undo_points < max_undo)
-                {
-                points = undo_position[undo_points+1];
-                undo_points++;
+                if (undo_points < max_undo) {
+                    points = undo_position[undo_points + 1];
+                    undo_points++;
                 }
             }
         });
         hbox.getChildren().add(button_redo);
 
-        //Set color to red button
-        Button button_red = new Button();
-        button_red.setText("Red");
-        button_red.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                drawColor = Color.RED;
+        //Color picker
+        final ColorPicker colorPicker = new ColorPicker();
+        colorPicker.setValue(Color.CORAL);
+        colorPicker.setOnAction(new EventHandler() {
+            public void handle(Event t) {
+                drawColor = colorPicker.getValue();
             }
         });
-        hbox.getChildren().add(button_red);
-
-        //Set color to yellow button
-        Button button_yellow = new Button();
-        button_yellow.setText("Yellow");
-        button_yellow.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                drawColor = Color.YELLOW;
+        hbox.getChildren().add(colorPicker);
+        
+        //Draw width slider
+        
+        Slider drawWidthSlider = new Slider();
+        drawWidthSlider.setMin(1);
+        drawWidthSlider.setMax(100);
+        drawWidthSlider.setValue(5);
+        drawWidthSlider.setShowTickLabels(true);
+        drawWidthSlider.setShowTickMarks(true);
+        drawWidthSlider.setMajorTickUnit(50);
+        drawWidthSlider.setMinorTickCount(5);
+        drawWidthSlider.setBlockIncrement(10);
+        drawWidthSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    drawWidth = new_val.intValue();
             }
         });
-        hbox.getChildren().add(button_yellow);
-
-        //Set color to blue button
-        Button button_blue = new Button();
-        button_blue.setText("Blue");
-        button_blue.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                drawColor = Color.BLUE;
-            }
-        });
-        hbox.getChildren().add(button_blue);
-
-        //Set width to 1 button
-        Button button_width_1 = new Button();
-        button_width_1.setText("Width: 1");
-        button_width_1.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                drawWidth = 1;
-            }
-        });
-        hbox.getChildren().add(button_width_1);
-
-        //Set width to 2 button
-        Button button_width_2 = new Button();
-        button_width_2.setText("Width: 2");
-        button_width_2.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                drawWidth = 2;
-            }
-        });
-        hbox.getChildren().add(button_width_2);
-
-        //Set width to 3 button
-        Button button_width_3 = new Button();
-        button_width_3.setText("Width: 3");
-        button_width_3.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                drawWidth = 3;
-            }
-        });
-        hbox.getChildren().add(button_width_3);
+        hbox.getChildren().add(drawWidthSlider);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         /*
@@ -260,30 +222,34 @@ public class SpartanPaintPrototype extends Application {
                 if (t.getButton() == MouseButton.PRIMARY) {
                     undo = 0;
                     undo_position[undo_points] = points;
-                    
-                    if (undo_points == max_undo)
+
+                    if (undo_points == max_undo) {
                         max_undo++;
+                    }
                     undo_points++;
-                    
+
                 }
                 if (t.getButton() == MouseButton.SECONDARY) {
                 };
             }
         });
-        
+
         root.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
                 if (t.getButton() == MouseButton.PRIMARY) {
+                    
                     point_x[points] = mouse_x;
                     point_y[points] = mouse_y;
                     point_width[points] = drawWidth;
                     point_connected[points] = mouseDown;
                     point_color[points] = drawColor;
                     point_undo[points] = undo;
+                   
                     points++;
                     undo++;
                     mouseDown = 1;
+                    
                 }
                 if (t.getButton() == MouseButton.SECONDARY) {
                 };
@@ -293,28 +259,27 @@ public class SpartanPaintPrototype extends Application {
         KeyFrame kf = new KeyFrame(
                 Duration.seconds(0.017), // 60 FPS
                 new EventHandler<ActionEvent>() {
-                    public void handle(ActionEvent ae) {
+            public void handle(ActionEvent ae) {
                     //double t = (System.currentTimeMillis() - timeStart) / 1000.0; 
 
                         //double x = 232 + 128 * Math.cos(t);
-                        //double y = 232 + 128 * Math.sin(t);
-                        window_x = theScene.getWindow().getX();
-                        window_y = theScene.getWindow().getY();
-                        scene_x = theScene.getX();
-                        scene_y = theScene.getY();
+                //double y = 232 + 128 * Math.sin(t);
+                window_x = theScene.getWindow().getX();
+                window_y = theScene.getWindow().getY();
+                scene_x = theScene.getX();
+                scene_y = theScene.getY();
 
-                        mouse_x = MouseInfo.getPointerInfo().getLocation().x - ((int) window_x) - ((int) scene_x);
-                        mouse_y = MouseInfo.getPointerInfo().getLocation().y - ((int) window_y) - ((int) scene_y);
+                mouse_x = MouseInfo.getPointerInfo().getLocation().x - ((int) window_x) - ((int) scene_x);
+                mouse_y = MouseInfo.getPointerInfo().getLocation().y - ((int) window_y) - ((int) scene_y);
 
-                        
-                        // Clear the canvas
-                        gc.clearRect(0, 0, canvas_width, canvas_height);
-                        //gc.fillRect(0,0,x + 50,y + 50);
-                        gc.setFill(Color.BLUE);
-                        x++;
-                        gc.fillRect(mouse_x - 5, mouse_y - 5, 10, 10);
+                // Clear the canvas
+                gc.clearRect(0, 0, canvas_width, canvas_height);
+                //gc.fillRect(0,0,x + 50,y + 50);
+                gc.setFill(drawColor);
+                x++;
+                gc.fillRect(mouse_x - 5, mouse_y - 5, 10, 10);
 
-                        /*
+                /*
                          if (MouseEvent.isPrimaryButtonDown())
                          {
                     
@@ -323,32 +288,33 @@ public class SpartanPaintPrototype extends Application {
                          {
                     
                          }*/
-                        for (int i = 0; i < points; i++) {
-                            //gc.setFill(point_color[i]);
-                            gc.setStroke(point_color[i]);
-                            //gc.fillRect(point_x[i]-5,point_y[i]-5, 10, 10);
-                            if (i > 0) {
-                                //Line theLine = new Line(point_x[i-1], point_y[i-1], point_x[i], point_y[i]);
-                                if (point_connected[i] == 1)
-                                         {
-                                    gc.setStroke(point_color[i-1]);
-                                    gc.setLineWidth(point_width[i]);
-                                    gc.strokeLine(point_x[i - 1], point_y[i - 1], point_x[i], point_y[i]);
-                                }
-                            }
+                
+                for (int i = 0; i < points; i++) {
+                    //gc.setFill(point_color[i]);
+                    gc.setStroke(point_color[i]);
+                    //gc.fillRect(point_x[i]-5,point_y[i]-5, 10, 10);
+                    if (i > 0) {
+                        //Line theLine = new Line(point_x[i-1], point_y[i-1], point_x[i], point_y[i]);
+                        
+                        if (point_connected[i] == 1) {
+                            gc.setStroke(point_color[i - 1]);
+                            gc.setLineWidth(point_width[i]);
+                            gc.strokeLine(point_x[i - 1], point_y[i - 1], point_x[i], point_y[i]);
                         }
-
-                        String str1 = Double.toString(window_x);// + " , " + Double.toString(window_y);
+                        }
+                    }
+                
+                String str1 = Double.toString(window_x);// + " , " + Double.toString(window_y);
 
                         //gc.fillText(str1, 200, 200); //draw screen position text
-                        // background image clears canvas
+                // background image clears canvas
                     /*
                          gc.drawImage( space, 0, 0 );
                          gc.drawImage( earth, x, y );
                          gc.drawImage( sun, 196, 196 );
-                         */
-                    }
-                });
+                 */
+            }
+        });
 
         paintLoop.getKeyFrames().add(kf);
         paintLoop.play();
@@ -359,4 +325,5 @@ public class SpartanPaintPrototype extends Application {
     public void button(String text) {
 
     }
+
 }

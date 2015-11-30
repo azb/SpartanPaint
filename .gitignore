@@ -1,1 +1,3 @@
 # Root .gitignore
+/SpartanPaintPrototype/build/
+/SpartanPaintPrototype/dist/
