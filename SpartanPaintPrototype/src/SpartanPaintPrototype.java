@@ -1,5 +1,13 @@
 
 import java.awt.MouseInfo;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.application.Application;
@@ -12,6 +20,7 @@ import javafx.scene.image.Image;
 
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.util.Duration;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
@@ -28,6 +37,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
 
 // An alternative implementation of Example 3,
 //    using the Timeline, KeyFrame, and Duration classes.
@@ -62,6 +75,8 @@ public class SpartanPaintPrototype extends Application {
 
     private int canvas_width = 1024;
     private int canvas_height = 768;
+    
+    private Image image1 = new Image("/theImage.png");
 
     public static void main(String[] args) {
         launch(args);
@@ -79,14 +94,18 @@ public class SpartanPaintPrototype extends Application {
         scene_x = theScene.getX();
         scene_y = theScene.getY();
 
+        WritableImage wim = new WritableImage(300, 250);
+
         //Canvas
         Canvas canvas = new Canvas(canvas_width, canvas_height);
         root.getChildren().add(canvas);
         Button button_undo = new Button();
         Button button_redo = new Button();
+
+        VBox topBarVBox = new VBox();
         HBox hbox = new HBox(2); // spacing = 8
         //hbox.getChildren().addAll(new Label("Name:"), new TextBox());
-        root.getChildren().add(hbox);
+        root.getChildren().add(topBarVBox);
 
         MenuBar topBar = new MenuBar();
         Menu fileMenu = new Menu();
@@ -97,22 +116,113 @@ public class SpartanPaintPrototype extends Application {
         helpMenu.setText("Help");
         MenuItem loadButton = new MenuItem();
 
-        MenuItem add = new MenuItem("New Image");
-        fileMenu.getItems().addAll(add);
-        add = new MenuItem("Load Image");
-        fileMenu.getItems().addAll(add);
-        add = new MenuItem("Save Image");
-        fileMenu.getItems().addAll(add);
+        MenuItem newImageMenuItem = new MenuItem("New Image");
+        newImageMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                points = 0;
+                undo_points = 0;
+                button_redo.setDisable(true);
+                button_undo.setDisable(true);
+            }
+        });
 
-        add = new MenuItem("New Image");
-        editMenu.getItems().addAll(add);
-        add = new MenuItem("Load Image");
-        editMenu.getItems().addAll(add);
-        add = new MenuItem("Save Image");
-        editMenu.getItems().addAll(add);
+        MenuItem loadImageMenuItem = new MenuItem("Load Image");
 
+        loadImageMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Load Image File");
+
+                fileChooser.getExtensionFilters().addAll(
+                        //new FileChooser.ExtensionFilter("All Images", "*.*"),
+
+                        new FileChooser.ExtensionFilter("PNG", "*.png"),
+                        new FileChooser.ExtensionFilter("JPG", "*.jpg")
+                );
+
+                File file = fileChooser.showOpenDialog(theStage);
+
+                String myString = file.toString(); //"This text will be copied into clipboard when running this code!";
+                StringSelection stringSelection = new StringSelection(myString);
+                Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clpbrd.setContents(stringSelection, null);
+                
+                BufferedImage bufferedImage = new BufferedImage(0,0,0);
+                
+                try {
+                    bufferedImage = ImageIO.read(file);
+                } catch (IOException ex) {
+                    Logger.getLogger(SpartanPaintPrototype.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                image1 = new Image("theImage2.png");
+                image1 = SwingFXUtils.toFXImage(bufferedImage, null);
+                //myImageView.setImage(image);
+
+                //image1 = ImageIO.read(file); //new Image(file.getPath()+file.getName()); new Image(file); //
+                }
+        });
+
+        MenuItem saveImageMenuItem = new MenuItem("Save Image");
+
+        saveImageMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save Image File");
+
+                fileChooser.getExtensionFilters().addAll(
+                        //new FileChooser.ExtensionFilter("All Images", "*.*"),
+
+                        new FileChooser.ExtensionFilter("PNG", "*.png"),
+                        new FileChooser.ExtensionFilter("JPG", "*.jpg")
+                );
+
+                File file = fileChooser.showSaveDialog(theStage);
+
+                //if (file.isFile()) {
+                    //Snapshot canvas
+                    canvas.snapshot(null, wim);
+
+                //File file = new File("CanvasImage.png");
+                    try {
+                        ImageIO.write(SwingFXUtils.fromFXImage(wim, null), "png", file);
+                    } catch (Exception s) {
+                    }
+                }
+            //}
+        });
+        
+        MenuItem propertiesMenuItem = new MenuItem("New Image");
+        propertiesMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                points = 0;
+                undo_points = 0;
+                button_redo.setDisable(true);
+                button_undo.setDisable(true);
+            }
+        });
+
+
+        MenuItem exitMenuItem = new MenuItem("Exit");
+
+        exitMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                System.exit(0);
+            }
+        });
+        fileMenu.getItems().addAll(newImageMenuItem, loadImageMenuItem, saveImageMenuItem, exitMenuItem);
+
+        /*MenuItem add = new MenuItem("New Image");        
+         editMenu.getItems().addAll(add);
+         MenuItem add = new MenuItem("Load Image");        
+         editMenu.getItems().addAll(add);
+         MenuItem add = new MenuItem("Save Image");        
+         editMenu.getItems().addAll(add);
+         */
         topBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
-        hbox.getChildren().add(topBar);
+        topBarVBox.getChildren().add(topBar);
+        topBarVBox.getChildren().add(hbox);
 
         //Clear Canvas Button
         Button button_clear_canvas = new Button();
@@ -275,10 +385,13 @@ public class SpartanPaintPrototype extends Application {
                 // Clear the canvas
                 gc.clearRect(0, 0, canvas_width, canvas_height);
                 //gc.fillRect(0,0,x + 50,y + 50);
+                
+                gc.drawImage(image1, 0, 64);
+                
                 gc.setFill(drawColor);
                 x++;
-                gc.fillRect(mouse_x - 5, mouse_y - 5, 10, 10);
-
+                gc.fillRect(mouse_x - drawWidth/2, mouse_y - drawWidth/2, drawWidth, drawWidth);
+                
                 /*
                          if (MouseEvent.isPrimaryButtonDown())
                          {
