@@ -16,8 +16,16 @@ extends PAppletPanel<CanvasPanel.Applet>
         int ppmouseX;
         int ppmouseY;
 
+        //Array of news headlines
+        String[] headlines;
+
+        PFont font; //Global font variable
+        float fontX; //horizontal location of headline
+        int index = 0; //Quote currently displayed
+                
         public int SomeColor;
         public int count = 0;
+        public int quoteCounter = 0;
         
         public String currentTool = "";
         public boolean pencil = false;
@@ -32,10 +40,45 @@ extends PAppletPanel<CanvasPanel.Applet>
             ppmouseX = mouseX;
             ppmouseY = mouseY;
             SomeColor = color(255, 0, 0);
+            
+            //Font for quotes
+            font = createFont("Arial",16,true);
+            fontX = width;   
+
+            //Populate headlines
+            getHeadlines();
         }
+        
         @Override
         public void draw()
         {
+            //Rectangle fill (rect that fixes text animation)
+            fill(0);
+            noStroke();
+            rect(0,height-40,width,25);
+            
+            //Text fill
+            fill(255);
+            
+            // Display headline at x  location
+            textFont(font,16);        
+            textAlign(LEFT);
+            text(headlines[index],fontX,height-25); 
+            
+            // Decrement x
+            fontX = fontX - 2;
+
+            // If x is less than the negative width, 
+            // then it is off the screen
+            float w = textWidth(headlines[index]);
+            
+            //Update font
+            if (fontX < -w) 
+            {
+              fontX = width; 
+              index = (index + 1) % headlines.length;
+            }    
+            
             switch(currentTool)
             {
                 case "pencil":
@@ -113,17 +156,39 @@ extends PAppletPanel<CanvasPanel.Applet>
         {
             count = 0; //reset counter
         }
-        
+            
         //Pencil tool selected
         public void pencilTool()
         {
             currentTool = "pencil";
         }
-        
+            
         //Fireworks tool selected
         public void splatTool()
         {
             currentTool = "splat";
+        }
+        
+        //Calls another class to get and fill array
+        public void getHeadlines()
+        {           
+            //Call QuoteGrab class and get number of quotes
+            QuoteGrab q = new QuoteGrab(); 
+            int lineCount = q.getLineCount();
+                        
+            //Set index count to number of quotes. Makes it so we don't have to manually count quotes
+            Random r = new Random();        
+            index = r.nextInt(lineCount)+1; 
+            
+            //Declare the size of the array "headlines"
+            headlines = new String[lineCount];
+            
+            //Assign each element of the array to a quote
+            for(int i = 0; i < lineCount; i++)
+            {
+                String quote = q.getQuote(i);
+                headlines[i] = quote;
+            }
         }
     }
 }
