@@ -230,8 +230,42 @@ public class SpartanPaintPrototype extends Application {
         fileMenu.getItems().addAll(newImageMenuItem, loadImageMenuItem, saveImageMenuItem, propertiesMenuItem, exitMenuItem);
         
         MenuItem undoMenuItem = new MenuItem("Undo");
+            undoMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+            if (undo_points > 0) {
+                    button_redo.setDisable(false);
+                    points = undo_position[undo_points - 1];
+                    undo_points--;
+                    if (undo_points == 0) {
+                        button_undo.setDisable(true);
+                    }
+                }
+            }
+        });
         MenuItem redoMenuItem = new MenuItem("Redo");
+        redoMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent event) {
+                if (undo_points < max_undo) {
+                    points = undo_position[undo_points + 1];
+                    undo_points++;
+                }
+            }
+        });
+        
+        
+        
         MenuItem clearCanvasMenuItem = new MenuItem("Clear Canvas");
+        
+        clearCanvasMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                points = 0;
+                undo_points = 0;
+                button_redo.setDisable(true);
+                button_undo.setDisable(true);
+                image1 = new Image("/theImage.png");
+                //System.out.println("Hello World!");
+            }
+        });
         
         editMenu.getItems().addAll( undoMenuItem, redoMenuItem, clearCanvasMenuItem);
         
