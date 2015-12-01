@@ -38,6 +38,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
@@ -54,13 +55,13 @@ public class SpartanPaintPrototype extends Application {
     private double window_y = 0;
     private double scene_x = 0;
     private double scene_y = 0;
-    private int mouse_x = 0;
-    private int mouse_y = 0;
+    private double mouse_x = 0;
+    private double mouse_y = 0;
     
     private int points = 0;
     int MAX_POINTS = 1000000;
-    private int point_x[] = new int[MAX_POINTS];
-    private int point_y[] = new int[MAX_POINTS];
+    private double point_x[] = new double[MAX_POINTS];
+    private double point_y[] = new double[MAX_POINTS];
     private int point_width[] = new int[MAX_POINTS];
     private int point_connected[] = new int[MAX_POINTS];
     private Color point_color[] = new Color[MAX_POINTS];
@@ -75,6 +76,19 @@ public class SpartanPaintPrototype extends Application {
 
     private int canvas_width = 1024;
     private int canvas_height = 768;
+    
+    private double canvas_zoom = 1;
+    private double canvas_zoom_draw = 1;
+    
+    private double canvas_xpos = 0;
+    private double canvas_ypos = 0;
+    
+    private double canvas_drag_start_xpos = 0;
+    private double canvas_drag_start_ypos = 0;
+    
+    private double canvas_drag_start_mouse_xpos = 0;
+    private double canvas_drag_start_mouse_ypos = 0;
+    
     
     private Image image1 = new Image("/theImage.png");
 
@@ -94,7 +108,7 @@ public class SpartanPaintPrototype extends Application {
         scene_x = theScene.getX();
         scene_y = theScene.getY();
 
-        WritableImage wim = new WritableImage(300, 250);
+        WritableImage wim = new WritableImage(canvas_width, canvas_height);
 
         //Canvas
         Canvas canvas = new Canvas(canvas_width, canvas_height);
@@ -194,7 +208,7 @@ public class SpartanPaintPrototype extends Application {
             //}
         });
         
-        MenuItem propertiesMenuItem = new MenuItem("New Image");
+        MenuItem propertiesMenuItem = new MenuItem("Properties");
         propertiesMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
                 points = 0;
@@ -212,8 +226,15 @@ public class SpartanPaintPrototype extends Application {
                 System.exit(0);
             }
         });
-        fileMenu.getItems().addAll(newImageMenuItem, loadImageMenuItem, saveImageMenuItem, exitMenuItem);
-
+        
+        fileMenu.getItems().addAll(newImageMenuItem, loadImageMenuItem, saveImageMenuItem, propertiesMenuItem, exitMenuItem);
+        
+        MenuItem undoMenuItem = new MenuItem("Undo");
+        MenuItem redoMenuItem = new MenuItem("Redo");
+        MenuItem clearCanvasMenuItem = new MenuItem("Clear Canvas");
+        
+        editMenu.getItems().addAll( undoMenuItem, redoMenuItem, clearCanvasMenuItem);
+        
         /*MenuItem add = new MenuItem("New Image");        
          editMenu.getItems().addAll(add);
          MenuItem add = new MenuItem("Load Image");        
@@ -317,6 +338,7 @@ public class SpartanPaintPrototype extends Application {
 
         final long timeStart = System.currentTimeMillis();
 
+        
         root.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
@@ -325,7 +347,9 @@ public class SpartanPaintPrototype extends Application {
                     button_undo.setDisable(false);
                 }
                 if (t.getButton() == MouseButton.SECONDARY) {
+                    
                 };
+                
             }
         });
         root.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -343,6 +367,12 @@ public class SpartanPaintPrototype extends Application {
                 }
                 if (t.getButton() == MouseButton.SECONDARY) {
                 };
+                if (t.getButton() == MouseButton.MIDDLE) {
+                    canvas_drag_start_xpos = canvas_xpos;
+                    canvas_drag_start_ypos = canvas_ypos;
+                    canvas_drag_start_mouse_xpos = mouse_x;
+                    canvas_drag_start_mouse_ypos = mouse_y;
+                };
             }
         });
 
@@ -351,8 +381,8 @@ public class SpartanPaintPrototype extends Application {
             public void handle(MouseEvent t) {
                 if (t.getButton() == MouseButton.PRIMARY) {
                     
-                    point_x[points] = mouse_x;
-                    point_y[points] = mouse_y;
+                    point_x[points] = (mouse_x - canvas_xpos) / canvas_zoom_draw;
+                    point_y[points] = (mouse_y - canvas_ypos) / canvas_zoom_draw;
                     point_width[points] = drawWidth;
                     point_connected[points] = mouseDown;
                     point_color[points] = drawColor;
@@ -365,9 +395,23 @@ public class SpartanPaintPrototype extends Application {
                 }
                 if (t.getButton() == MouseButton.SECONDARY) {
                 };
+                if (t.getButton() == MouseButton.MIDDLE) {
+                    canvas_xpos = (mouse_x - canvas_drag_start_mouse_xpos) + canvas_drag_start_xpos;
+                    canvas_ypos = (mouse_y - canvas_drag_start_mouse_ypos) + canvas_drag_start_ypos;
+                };
             }
         });
 
+        root.setOnScroll(new EventHandler<ScrollEvent>() {
+        @Override public void handle(ScrollEvent event) {
+            canvas_zoom += event.getDeltaY() / 100;
+            if (canvas_zoom < .5) canvas_zoom = .5;
+            if (canvas_zoom > 10) canvas_zoom = 10;
+            
+            //node.setTranslateX(node.getTranslateX() + event.getDeltaX());
+            //node.setTranslateY(node.getTranslateY() + event.getDeltaY());
+        }
+    });
         KeyFrame kf = new KeyFrame(
                 Duration.seconds(0.017), // 60 FPS
                 new EventHandler<ActionEvent>() {
@@ -388,7 +432,7 @@ public class SpartanPaintPrototype extends Application {
                 gc.clearRect(0, 0, canvas_width, canvas_height);
                 //gc.fillRect(0,0,x + 50,y + 50);
                 
-                gc.drawImage(image1, 0, 64);
+                gc.drawImage(image1, canvas_xpos, canvas_ypos , image1.getWidth() * canvas_zoom_draw,image1.getHeight() * canvas_zoom_draw);
                 
                 gc.setFill(drawColor);
                 x++;
@@ -412,13 +456,13 @@ public class SpartanPaintPrototype extends Application {
                         
                         if (point_connected[i] == 1) {
                             gc.setStroke(point_color[i - 1]);
-                            gc.setLineWidth(point_width[i]);
-                            gc.strokeLine(point_x[i - 1], point_y[i - 1], point_x[i], point_y[i]);
+                            gc.setLineWidth(point_width[i] * canvas_zoom_draw);
+                            gc.strokeLine(point_x[i - 1] * canvas_zoom_draw + canvas_xpos, point_y[i - 1] * canvas_zoom_draw + canvas_ypos, point_x[i] * canvas_zoom_draw + canvas_xpos, point_y[i] * canvas_zoom_draw + canvas_ypos);
                         }
                         }
                     }
                 
-                gc.fillRect(mouse_x - drawWidth/2, mouse_y - drawWidth/2, drawWidth, drawWidth);
+                gc.fillRect(mouse_x - drawWidth/2 * canvas_zoom_draw, mouse_y - drawWidth/2 * canvas_zoom_draw, drawWidth * canvas_zoom_draw, drawWidth * canvas_zoom_draw);
                 
                 String str1 = Double.toString(window_x);// + " , " + Double.toString(window_y);
 
@@ -429,6 +473,8 @@ public class SpartanPaintPrototype extends Application {
                          gc.drawImage( earth, x, y );
                          gc.drawImage( sun, 196, 196 );
                  */
+                
+                canvas_zoom_draw = (canvas_zoom + canvas_zoom_draw) / 2;
             }
         });
 
