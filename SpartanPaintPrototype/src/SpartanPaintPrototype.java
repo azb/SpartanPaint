@@ -123,6 +123,7 @@ public class SpartanPaintPrototype extends Application {
                 undo_points = 0;
                 button_redo.setDisable(true);
                 button_undo.setDisable(true);
+                image1 = new Image("/theImage.png");
             }
         });
 
@@ -148,14 +149,14 @@ public class SpartanPaintPrototype extends Application {
                 Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clpbrd.setContents(stringSelection, null);
                 
-                BufferedImage bufferedImage = new BufferedImage(0,0,0);
+                BufferedImage bufferedImage = new BufferedImage(1000,1000,BufferedImage.TYPE_BYTE_BINARY);
                 
                 try {
                     bufferedImage = ImageIO.read(file);
                 } catch (IOException ex) {
                     Logger.getLogger(SpartanPaintPrototype.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                image1 = new Image("theImage2.png");
+                //image1 = new Image("theImage2.png");
                 image1 = SwingFXUtils.toFXImage(bufferedImage, null);
                 //myImageView.setImage(image);
 
@@ -235,6 +236,7 @@ public class SpartanPaintPrototype extends Application {
                 undo_points = 0;
                 button_redo.setDisable(true);
                 button_undo.setDisable(true);
+                image1 = new Image("/theImage.png");
                 //System.out.println("Hello World!");
             }
         });
@@ -390,7 +392,6 @@ public class SpartanPaintPrototype extends Application {
                 
                 gc.setFill(drawColor);
                 x++;
-                gc.fillRect(mouse_x - drawWidth/2, mouse_y - drawWidth/2, drawWidth, drawWidth);
                 
                 /*
                          if (MouseEvent.isPrimaryButtonDown())
@@ -416,6 +417,8 @@ public class SpartanPaintPrototype extends Application {
                         }
                         }
                     }
+                
+                gc.fillRect(mouse_x - drawWidth/2, mouse_y - drawWidth/2, drawWidth, drawWidth);
                 
                 String str1 = Double.toString(window_x);// + " , " + Double.toString(window_y);
 
